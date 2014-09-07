@@ -1,5 +1,3 @@
-
-
 Template.bandpass.helpers
   Q: ->
     this.getQ().toFixed(2)

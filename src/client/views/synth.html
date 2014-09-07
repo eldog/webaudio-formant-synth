@@ -1,10 +1,9 @@
 <template name="synth">
   <h2>Synth</h2>
-  <button name="start">Start</button>
-  <button name="stop">Stop</button>
+  <button class="btn btn-success" name="start">{{synthState}}</button>
   <label>
-    <input type="range" min="150" max="880" value="350" name="frequency"/>
-    Frequency
+    <input type="range" min="40" max="880" value="{{frequency}}" name="frequency"/>
+    Frequency ({{frequency}}Hz)
   </label>
   {{#each bandpasses}}
     {{> bandpass}}
