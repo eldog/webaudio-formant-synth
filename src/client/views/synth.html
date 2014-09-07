@@ -1,0 +1,12 @@
+<template name="synth">
+  <h2>Synth</h2>
+  <button name="start">Start</button>
+  <button name="stop">Stop</button>
+  <label>
+    <input type="range" min="150" max="880" value="350" name="frequency"/>
+    Frequency
+  </label>
+  {{#each bandpasses}}
+    {{> bandpass}}
+  {{/each}}
+</template>
