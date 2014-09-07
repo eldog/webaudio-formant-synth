@@ -3,7 +3,7 @@ class @BandPass
     @dep                = new Tracker.Dependency
     @bp                 = ctx.createBiquadFilter()
     @gainNode           = ctx.createGain()
-    @bp.type            = @bp.bandpass
+    @bp.type            = 'bandpass'
     @bp.frequency.value = freq
     @bp.Q.value         = q
     @gainNode.gain.value = Math.pow(10, gain / 10)
