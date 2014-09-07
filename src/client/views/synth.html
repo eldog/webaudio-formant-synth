@@ -13,6 +13,14 @@
     <input type="range" min="-20" max="0" value="{{gain}}" name="gain"/>
     Gain ({{gain}}db)
   </label>
+  <label>
+    Vowel
+    <select name="vowel">
+      {{#each vowels}}
+        <option value="{{name}}">{{name}}</option>
+      {{/each}}
+    </select>
+  </label>
   {{#each bandpasses}}
     {{> bandpass}}
   {{/each}}

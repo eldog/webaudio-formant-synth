@@ -13,6 +13,9 @@ Template.synth.helpers
   gain: ->
     Template.instance().formantSynth.getGain().toFixed(2)
 
+  vowels: ->
+    Template.instance().formantSynth.getAvailableVowels()
+
   bandpasses: ->
     Template.instance().formantSynth.getBandPasses()
 
@@ -36,6 +39,7 @@ Template.synth.events
     value = parseFloat($(event.target).val())
     Template.instance().formantSynth.setGain(value)
 
-
-
+  'change [name="vowel"]': (event) ->
+    value = $(event.target).val()
+    Template.instance().formantSynth.setVowel(value)
 

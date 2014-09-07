@@ -1,3 +1,23 @@
+VOWELS = [
+  name: 'A'
+  values: [
+    [600, 60, 0]
+    [1040, 70, -7]
+    [2250, 110, -9]
+    [2450, 120, -9]
+    [2750, 120, -9]
+  ]
+,
+  name: 'E'
+  values: [
+    [400, 40, 0]
+    [1620, 80, -12]
+    [2400, 100, -9]
+    [2800, 120, -12]
+    [3100, 120, -18]
+  ]
+]
+
 class @FormantSynth
   constructor: (@_ctx) ->
     @_bandPassesDep = new Tracker.Dependency
@@ -12,13 +32,18 @@ class @FormantSynth
     @_masterGain = @_ctx.createGain()
     @_masterGain.connect(@_ctx.destination)
     @_masterGain.gain.value = 1
-    @_createAndConnectBandPass(600, 60, 0)
-    @_createAndConnectBandPass(1040, 70, -7)
-    @_createAndConnectBandPass(2250, 110, -9)
-    @_createAndConnectBandPass(2450, 120, -9)
-    @_createAndConnectBandPass(2750, 130, -20)
     @_vibosc.frequency.value = 4
     @_vibosc.start()
+    @_vowelIndex = 0
+    @_connectVowelBandPasses()
+
+  _connectVowelBandPasses: ->
+    vowel = VOWELS[@_vowelIndex]
+    for bandPass in @_bandPasses
+      bandPass.disconnect()
+    @_bandPasses = []
+    for [freq, q, gain] in vowel.values
+      @_createAndConnectBandPass(freq, q, gain)
 
   _createAndConnectBandPass: (freq, q, gain) ->
     @_bandPasses.push(new BandPass(@_ctx, freq, q, gain))
@@ -57,6 +82,21 @@ class @FormantSynth
     if @_osc?
       @_osc.frequency.value = frequency
     @_frequencyDep.changed()
+
+  getAvailableVowels: ->
+    VOWELS
+
+  setVowel: (name) ->
+    for vowel, index in VOWELS
+      continue unless vowel.name == name
+      @_vowelIndex = index
+      @_connectVowelBandPasses()
+      if @_osc?
+        for bandPass in @_bandPasses
+          bandPass.connect(@_osc, @_masterGain)
+
+  getVowelIndex: ->
+    @_vowelIndex
 
   _start: ->
     @_osc = @_ctx.createOscillator()

@@ -13,6 +13,9 @@ class @BandPass
     src.connect(@bp)
     @gainNode.connect(dest)
 
+  disconnect: ->
+    @bp.disconnect()
+
   getQ: ->
     @dep.depend()
     @bp.Q.value
