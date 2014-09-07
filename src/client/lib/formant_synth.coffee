@@ -54,6 +54,7 @@ class @FormantSynth
     @_vibosc.start()
     @_vowelIndex = 0
     @_connectVowelBandPasses()
+    return unless @midi?
     Tracker.autorun =>
       @midinote = @midi.getNote()
       @vel = @midi.getVelocity()
@@ -125,7 +126,7 @@ class @FormantSynth
   getVowelIndex: ->
     @_vowelIndex
 
-  _start: ->
+  start: ->
     @_osc = @_ctx.createOscillator()
     @_osc.type = 'sawtooth'
     @_osc.frequency.value = @_freq
@@ -144,7 +145,7 @@ class @FormantSynth
 
   toggle: ->
     unless @_started
-      @_start()
+      @start()
     else
       @_stop()
 
