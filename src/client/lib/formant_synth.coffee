@@ -19,7 +19,7 @@ VOWELS = [
 ]
 
 class @FormantSynth
-  constructor: (@_ctx) ->
+  constructor: (@_ctx, @midi) ->
     @_bandPassesDep = new Tracker.Dependency
     @_bandPasses = []
     @_frequencyDep = new Tracker.Dependency
@@ -36,6 +36,11 @@ class @FormantSynth
     @_vibosc.start()
     @_vowelIndex = 0
     @_connectVowelBandPasses()
+    Tracker.autorun =>
+      @midinote = @midi.getNote()
+      @vel = @midi.getVelocity()
+      @setFrequency(Math.pow(2, (@midinote - 69) / 12) * 440)
+      @setVelocity(@vel)
 
   _connectVowelBandPasses: ->
     vowel = VOWELS[@_vowelIndex]
@@ -71,6 +76,10 @@ class @FormantSynth
 
   setGain: (value) ->
     @_masterGain.gain.value = Decibels.dbToGain(value)
+    @_gainDep.changed()
+
+  setVelocity: (value) ->
+    @_masterGain.gain.value = value/127
     @_gainDep.changed()
 
   getState: ->

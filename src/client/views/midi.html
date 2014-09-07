@@ -1,0 +1,8 @@
+<template name="midi">
+  <select name="midiinput">
+    {{#each midiinputs}}
+      <option value="{{name}}">{{name}}</option>
+    {{/each}}
+  </select>
+  {{> synth midi}}
+</template>
