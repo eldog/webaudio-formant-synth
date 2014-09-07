@@ -42,5 +42,4 @@ class @ArrayBufferAudioSample extends AbstractAudioSample
 
   @fromURL: (url, callback) ->
     ArrayBufferAudioSample.loadAudioFromUrl url, (buffer) =>
-      console.log(buffer)
       callback(new ArrayBufferAudioSample(buffer), buffer)
