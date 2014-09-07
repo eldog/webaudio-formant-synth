@@ -1,20 +1,17 @@
 class @BandPass
-  constructor: (ctx, freq, q, gain) ->
+  constructor: (ctx, freq, q, db) ->
     @dep                = new Tracker.Dependency
     @bp                 = ctx.createBiquadFilter()
     @gainNode           = ctx.createGain()
     @bp.type            = 'bandpass'
     @bp.frequency.value = freq
     @bp.Q.value         = q
-    @gainNode.gain.value = Math.pow(10, gain / 10)
+    @gainNode.gain.value = Decibels.dbToGain(db)
     @bp.connect(@gainNode)
 
   connect: (src, dest) ->
     src.connect(@bp)
     @gainNode.connect(dest)
-
-  log10: (x) ->
-    Math.log(x) / Math.LN10
 
   getQ: ->
     @dep.depend()
@@ -26,7 +23,7 @@ class @BandPass
 
   getGain: ->
     @dep.depend()
-    10 * @log10(@gainNode.gain.value)
+    Decibels.gainToDb(@gainNode.gain.value)
 
   setQ: (value) ->
     @dep.changed()
@@ -38,7 +35,5 @@ class @BandPass
 
   setGain: (value) ->
     @dep.changed()
-    @gainNode.gain.value = Math.pow(10, value / 10)
-
-
+    @gainNode.gain.value = Decibels.dbToGain(value)
 

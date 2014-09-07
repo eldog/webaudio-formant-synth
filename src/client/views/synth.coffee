@@ -7,6 +7,12 @@ Template.synth.helpers
   frequency: ->
     Template.instance().formantSynth.getFrequency()
 
+  vibrato: ->
+    Template.instance().formantSynth.getVibrato()
+
+  gain: ->
+    Template.instance().formantSynth.getGain().toFixed(2)
+
   bandpasses: ->
     Template.instance().formantSynth.getBandPasses()
 
@@ -21,4 +27,15 @@ Template.synth.events
   'input [name="frequency"]': (event) ->
     value = parseFloat($(event.target).val())
     Template.instance().formantSynth.setFrequency(value)
+
+  'input [name="vibrato"]': (event) ->
+    value = parseFloat($(event.target).val())
+    Template.instance().formantSynth.setVibrato(value)
+
+  'input [name="gain"]': (event) ->
+    value = parseFloat($(event.target).val())
+    Template.instance().formantSynth.setGain(value)
+
+
+
 

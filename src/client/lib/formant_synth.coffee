@@ -6,6 +6,8 @@ class @FormantSynth
     @_started = false
     @_startedDep = new Tracker.Dependency
     @_freq = 100
+    @_vibratoDep = new Tracker.Dependency
+    @_gainDep = new Tracker.Dependency
     @_vibosc = @_ctx.createOscillator()
     @_masterGain = @_ctx.createGain()
     @_masterGain.connect(@_ctx.destination)
@@ -29,6 +31,22 @@ class @FormantSynth
   getFrequency: ->
     @_frequencyDep.depend()
     @_freq
+
+  getVibrato: ->
+    @_vibratoDep.depend()
+    @_vibosc.frequency.value
+
+  setVibrato: (value) ->
+    @_vibosc.frequency.value = value
+    @_vibratoDep.changed()
+
+  getGain: ->
+    @_gainDep.depend()
+    Decibels.gainToDb(@_masterGain.gain.value)
+
+  setGain: (value) ->
+    @_masterGain.gain.value = Decibels.dbToGain(value)
+    @_gainDep.changed()
 
   getState: ->
     @_startedDep.depend()

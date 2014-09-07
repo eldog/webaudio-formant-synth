@@ -5,6 +5,14 @@
     <input type="range" min="40" max="880" value="{{frequency}}" name="frequency"/>
     Frequency ({{frequency}}Hz)
   </label>
+  <label>
+    <input type="range" min="0" max="10" value="{{vibrato}}" name="vibrato"/>
+    Vibrato ({{vibrato}}Hz)
+  </label>
+  <label>
+    <input type="range" min="-15" max="0" value="{{gain}}" name="gain"/>
+    Gain ({{gain}}db)
+  </label>
   {{#each bandpasses}}
     {{> bandpass}}
   {{/each}}
