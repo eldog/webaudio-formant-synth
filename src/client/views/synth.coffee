@@ -1,7 +1,7 @@
 Template.synth.created = ->
   AudioContext = window.AudioContext
   AudioContext ?= window.webkitAudioContext
-  @formantSynth = new FormantSynth(new AudioContext)
+  @formantSynth = new FormantSynth(new AudioContext, @data)
 
 Template.synth.helpers
   frequency: ->
