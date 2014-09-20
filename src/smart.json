@@ -1,0 +1,10 @@
+{
+    "bower": {
+        "qwerty-hancock": {
+            "version": "0.4.1",
+            "additionalFiles": [
+                "dist/qwerty-hancock.min.js"
+            ]
+        }
+    }
+}

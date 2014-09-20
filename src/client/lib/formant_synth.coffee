@@ -49,6 +49,7 @@ class @FormantSynth
     @_bandPassesDep = new Tracker.Dependency
     @_bandPasses = []
     @_frequencyDep = new Tracker.Dependency
+    @_freq = 100
     @_started = false
     @_startedDep = new Tracker.Dependency
     @_vibratoDep = new Tracker.Dependency
@@ -118,7 +119,8 @@ class @FormantSynth
     @_gainDep.changed()
 
   setVelocity: (value) ->
-    @_masterGain.gain.value = value/127
+    return unless value?
+    @_masterGain.gain.value = value / 127
     @_gainDep.changed()
 
   getState: ->
@@ -126,6 +128,7 @@ class @FormantSynth
     @_started
 
   setFrequency: (frequency) ->
+    return unless frequency?
     @_freq = frequency
     if @_osc?
       @_osc.frequency.value = frequency

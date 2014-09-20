@@ -3,6 +3,26 @@ Template.synth.created = ->
   AudioContext ?= window.webkitAudioContext
   @formantSynth = new FormantSynth(new AudioContext, null, @data)
 
+Template.synth.rendered = ->
+  @_keyboard = new QwertyHancock(
+     id: 'keyboard'
+     width: 600
+     height: 150
+     octaves: 2
+     startNote: 'A2'
+     whiteNotesColour: 'white'
+     blackNotesColour: 'black'
+     hoverColour: '#f3e939'
+  )
+  @_keyboard.keyDown = (note, frequency) =>
+    @formantSynth.setGain(0)
+    @formantSynth.setFrequency(frequency)
+
+  @_keyboard.keyUp = (note, frequency) =>
+    @formantSynth.setGain(frequency)
+    @formantSynth.setGain(-20)
+
+
 Template.synth.helpers
   frequency: ->
     Template.instance().formantSynth.getFrequency()
