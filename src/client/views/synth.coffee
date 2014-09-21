@@ -15,12 +15,12 @@ Template.synth.rendered = ->
      hoverColour: '#f3e939'
   )
   @_keyboard.keyDown = (note, frequency) =>
-    @formantSynth.setGain(0)
     @formantSynth.setFrequency(frequency)
+    @formantSynth.setGain(-1)
 
   @_keyboard.keyUp = (note, frequency) =>
     @formantSynth.setGain(frequency)
-    @formantSynth.setGain(-20)
+    @formantSynth.setGainValue(0)
 
 
 Template.synth.helpers

@@ -3,11 +3,11 @@ VOWELS = [
   frequency: 100
   vibrato: 4
   values: [
-    [600, 60, 0]
-    [1040, 70, -7]
-    [2250, 110, -9]
-    [2450, 120, -9]
-    [2750, 120, -9]
+    [600, 60, -6]
+    [1040, 70, -11]
+    [2250, 110, -15]
+    [2450, 120, -16]
+    [2750, 120, -17]
   ]
 ,
   name: 'Bass E'
@@ -56,7 +56,9 @@ class @FormantSynth
     @_gainDep = new Tracker.Dependency
     @_vibosc = @_ctx.createOscillator()
     @_masterGain = @_ctx.createGain()
-    @_masterGain.connect(@_ctx.destination)
+    @_dynamicCompressor = @_ctx.createDynamicsCompressor()
+    @_masterGain.connect(@_dynamicCompressor)
+    @_dynamicCompressor.connect(@_ctx.destination)
     @_masterGain.gain.value = 1
     @_vibosc.start()
     @_vowelIndex = 0
@@ -115,7 +117,12 @@ class @FormantSynth
     Decibels.gainToDb(@_masterGain.gain.value)
 
   setGain: (value) ->
-    @_masterGain.gain.value = Decibels.dbToGain(value)
+    gain = Decibels.dbToGain(value)
+    @setGainValue(gain)
+
+  setGainValue: (gain) ->
+    @_masterGain.gain.cancelScheduledValues(@_ctx.currentTime)
+    @_masterGain.gain.linearRampToValueAtTime(gain, @_ctx.currentTime + 0.1)
     @_gainDep.changed()
 
   setVelocity: (value) ->
