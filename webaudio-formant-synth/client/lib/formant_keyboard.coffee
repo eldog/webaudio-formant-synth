@@ -65,6 +65,8 @@ VOWELS = [
 class @FormantKeyboard
   constructor: (ctx, midi) ->
     @_noteMap = {}
+    @_vibrato = new ReactiveVar(0)
+    @_vibratoDepth = new ReactiveVar(0)
     @_voiceIndex = 0
     @_voice = VOWELS[@_voiceIndex]
     for octave in [0..END_OCTAVE - START_OCTAVE]
@@ -98,12 +100,20 @@ class @FormantKeyboard
     @_bandPasses
 
   getVibrato: ->
-    @_vibratoDep.depend()
-    @_vibosc.frequency.value
+    @_vibrato.get()
 
   setVibrato: (value) ->
-    @_vibosc.frequency.value = value
-    @_vibratoDep.changed()
+    for note, synth of @_noteMap
+      synth.setVibrato(value)
+    @_vibrato.set(value)
+
+  getVibratoDepth: ->
+    @_vibratoDepth.get()
+
+  setVibratoDepth: (value) ->
+    for note, synth of @_noteMap
+      synth.setVibratoDepth(value)
+    @_vibratoDepth.set(value)
 
   isStarted: ->
 
@@ -116,6 +126,7 @@ class @FormantKeyboard
   setVoice: (name) ->
     for vowel, index in VOWELS
       continue unless vowel.name == name
+      @_vibrato.set(vowel.vibrato)
       for noteName, synth of @_noteMap
         synth.setVoice(vowel)
 

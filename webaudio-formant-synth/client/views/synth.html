@@ -1,18 +1,13 @@
 <template name="synth">
   <h2>Synth</h2>
   <canvas id="oscilloscope"></canvas>
-  <button class="btn btn-success" name="start">{{synthState}}</button>
   <label>
-    <input type="range" min="40" max="880" value="{{frequency}}" name="frequency"/>
-    Frequency ({{frequency}}Hz)
+    <input type="range" min="0" max="200" value="{{vibratoDepth}}" id="vibrato-depth"/>
+    Vibrato Depth ({{vibratoDepth}})
   </label>
   <label>
-    <input type="range" min="0" max="10" value="{{vibrato}}" name="vibrato"/>
-    Vibrato ({{vibrato}}Hz)
-  </label>
-  <label>
-    <input type="range" min="-20" max="0" value="{{gain}}" name="gain"/>
-    Gain ({{gain}}db)
+    <input type="range" min="0" max="10" step="0.1" value="{{vibrato}}" id="vibrato-rate"/>
+    Vibrato Rate ({{vibrato}}Hz)
   </label>
   <label>
     Vowel

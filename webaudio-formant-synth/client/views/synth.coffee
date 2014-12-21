@@ -30,6 +30,12 @@ Template.synth.rendered = ->
 Template.synth.helpers
   vowels: ->
     Template.instance()._formantKeyboard.getAvailableVoices()
+
+  vibrato: ->
+    Template.instance()._formantKeyboard.getVibrato()
+
+  vibratoDepth: ->
+    Template.instance()._formantKeyboard.getVibratoDepth()
 #
 #  bandpasses: ->
 #    Template.instance().formantSynth.getBandPasses()
@@ -42,9 +48,13 @@ Template.synth.events
   'click [name="start"]': (event) ->
     Template.instance().formantSynth.toggle()
 
-  'input [name="vibrato"]': (event) ->
+  'input #vibrato-rate': (event) ->
     value = parseFloat($(event.target).val())
-    Template.instance().formantSynth.setVibrato(value)
+    Template.instance()._formantKeyboard.setVibrato(value)
+
+  'input #vibrato-depth': (event, template) ->
+    value = parseFloat($(event.target).val())
+    template._formantKeyboard.setVibratoDepth(value)
 
   'change [name="vowel"]': (event) ->
     value = $(event.target).val()

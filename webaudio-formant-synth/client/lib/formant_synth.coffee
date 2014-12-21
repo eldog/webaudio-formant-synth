@@ -9,6 +9,8 @@ class @FormantSynth
     @_vibratoDep = new Tracker.Dependency
     @_gainDep = new Tracker.Dependency
     @_vibosc = @_ctx.createOscillator()
+    @_vibratoGain = @_ctx.createGain()
+    @_vibratoGain.gain.value = 1
     @_masterGain = @_ctx.createGain()
     @_dynamicCompressor = @_ctx.createDynamicsCompressor()
     @_dynamicCompressor.connect(@_masterGain)
@@ -70,6 +72,9 @@ class @FormantSynth
     @_vibosc.frequency.value = value
     @_vibratoDep.changed()
 
+  setVibratoDepth: (value) ->
+    @_vibratoGain.gain.value = value
+
   getGain: ->
     @_gainDep.depend()
     Decibels.gainToDb(@_masterGain.gain.value)
@@ -99,7 +104,8 @@ class @FormantSynth
     @_osc.type = 'sawtooth'
     @_osc.frequency.value = 0
     @_osc.start()
-    @_vibosc.connect(@_osc.frequency)
+    @_vibosc.connect(@_vibratoGain)
+    @_vibratoGain.connect(@_osc.detune)
     for bandPass in @_bandPasses
       bandPass.connect(@_osc, @_dynamicCompressor)
     @_started = true
