@@ -12,8 +12,9 @@ class @MIDI
     console.log("MIDI not initialized: " + err.code)
 
   _midiStarted: (@_midiHandle) ->
-    @_inputs = @_midiHandle.inputs()
-    @_inputsDep.changed()
+    @_inputs = []
+    console.log @_midiHandle.inputs, @_midiHandle.inputs.size
+    getMidiInputs(@_midiHandle)
 
   getInputs: ->
     @_inputsDep.depend()

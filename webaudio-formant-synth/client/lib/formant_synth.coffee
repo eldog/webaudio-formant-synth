@@ -1,49 +1,3 @@
-VOWELS = [
-  name: 'Bass A'
-  frequency: 100
-  vibrato: 4
-  values: [
-    [600, 60, -6]
-    [1040, 70, -11]
-    [2250, 110, -15]
-    [2450, 120, -16]
-    [2750, 120, -17]
-  ]
-,
-  name: 'Bass E'
-  frequency: 100
-  vibrato: 4
-  values: [
-    [400, 40, 0]
-    [1620, 80, -12]
-    [2400, 100, -9]
-    [2800, 120, -12]
-    [3100, 120, -18]
-  ]
-,
-  name: 'Bass I'
-  frequency: 100
-  vibrato: 4
-  values: [
-    [250, 60, 0]
-    [1750, 90, -10]
-    [2600, 100, -16]
-    [3050, 120, -22]
-    [3340, 120, -28]
-  ]
-,
-  name: 'Bass O'
-  frequency: 100
-  vibrato: 4
-  values: [
-    [400, 40, 0]
-    [750, 80, -11]
-    [2400, 100, -21]
-    [2600, 120, -20]
-    [2900, 120, -40]
-  ]
-]
-
 class @FormantSynth
   constructor: (@_ctx, defaultVoice, @midi) ->
     @_bandPassesDep = new Tracker.Dependency
@@ -57,15 +11,10 @@ class @FormantSynth
     @_vibosc = @_ctx.createOscillator()
     @_masterGain = @_ctx.createGain()
     @_dynamicCompressor = @_ctx.createDynamicsCompressor()
-    @_masterGain.connect(@_dynamicCompressor)
-    @_dynamicCompressor.connect(@_ctx.destination)
+    @_dynamicCompressor.connect(@_masterGain)
     @_masterGain.gain.value = 1
     @_vibosc.start()
-    @_vowelIndex = 0
-    if defaultVoice?
-      @_connectVowelBandPasses(defaultVoice)
-    else
-      @_connectVowelBandPassesFromPreset()
+    @setVoice(defaultVoice)
     return unless @midi?
     Tracker.autorun =>
       @midinote = @midi.getNote()
@@ -73,9 +22,11 @@ class @FormantSynth
       @setFrequency(Math.pow(2, (@midinote - 69) / 12) * 440)
       @setVelocity(@vel)
 
-  _connectVowelBandPassesFromPreset: ->
-    vowel = VOWELS[@_vowelIndex]
+  setVoice: (vowel) ->
     @_connectVowelBandPasses(vowel)
+    if @_osc?
+      for bandPass in @_bandPasses
+        bandPass.connect(@_osc, @_dynamicCompressor)
 
   _connectVowelBandPasses: (vowel) ->
     for bandPass in @_bandPasses
@@ -89,8 +40,8 @@ class @FormantSynth
     @_frequencyDep.changed()
     @_vowel = vowel
 
-  getVowel: ->
-    @_vowel
+  connect: (destination) ->
+    @_masterGain.connect(destination)
 
   _createAndConnectBandPass: (freq, q, gain) ->
     @_bandPasses.push(new BandPass(@_ctx, freq, q, gain))
@@ -103,6 +54,13 @@ class @FormantSynth
   getFrequency: ->
     @_frequencyDep.depend()
     @_freq
+
+  setFrequency: (frequency) ->
+    return unless frequency?
+    @_freq = frequency
+    if @_osc?
+      @_osc.frequency.value = frequency
+    @_frequencyDep.changed()
 
   getVibrato: ->
     @_vibratoDep.depend()
@@ -121,8 +79,7 @@ class @FormantSynth
     @setGainValue(gain)
 
   setGainValue: (gain) ->
-    @_masterGain.gain.cancelScheduledValues(@_ctx.currentTime)
-    @_masterGain.gain.linearRampToValueAtTime(gain, @_ctx.currentTime + 0.1)
+    @_masterGain.gain.value = gain
     @_gainDep.changed()
 
   setVelocity: (value) ->
@@ -134,36 +91,17 @@ class @FormantSynth
     @_startedDep.depend()
     @_started
 
-  setFrequency: (frequency) ->
-    return unless frequency?
-    @_freq = frequency
-    if @_osc?
-      @_osc.frequency.value = frequency
-    @_frequencyDep.changed()
-
-  getAvailableVowels: ->
-    VOWELS
-
-  setVowel: (name) ->
-    for vowel, index in VOWELS
-      continue unless vowel.name == name
-      @_vowelIndex = index
-      @_connectVowelBandPassesFromPreset()
-      if @_osc?
-        for bandPass in @_bandPasses
-          bandPass.connect(@_osc, @_masterGain)
-
-  getVowelIndex: ->
-    @_vowelIndex
 
   start: ->
+    if @_started
+      throw new Exception 'Already started'
     @_osc = @_ctx.createOscillator()
     @_osc.type = 'sawtooth'
-    @_osc.frequency.value = @_freq
+    @_osc.frequency.value = 0
     @_osc.start()
     @_vibosc.connect(@_osc.frequency)
     for bandPass in @_bandPasses
-      bandPass.connect(@_osc, @_masterGain)
+      bandPass.connect(@_osc, @_dynamicCompressor)
     @_started = true
     @_startedDep.changed()
 

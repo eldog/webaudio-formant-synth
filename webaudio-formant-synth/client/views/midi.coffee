@@ -1,6 +1,7 @@
 Template.midi.created = ->
   @midi = new MIDI
   @midi.start()
+  console.log @midi
 
 Template.midi.helpers
   midiinputs: ->
