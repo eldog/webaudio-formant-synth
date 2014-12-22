@@ -69,13 +69,14 @@ class @FormantKeyboard
     @_vibratoDepth = new ReactiveVar(0)
     @_voiceIndex = 0
     @_voice = VOWELS[@_voiceIndex]
+    @_bandPasses = new ReactiveVar([])
     for octave in [0..END_OCTAVE - START_OCTAVE]
       for note in NOTES
         @_noteMap["#{note}#{octave}"] = new FormantSynth(
           ctx,
-          @_voice,
           midi
         )
+    @_setVoice(@_voice)
 
   connect: (destination) ->
     for noteName, synth of @_noteMap
@@ -96,8 +97,7 @@ class @FormantKeyboard
     synth.setGain(-Infinity)
 
   getBandPasses: ->
-    @_bandPassesDep.depend()
-    @_bandPasses
+    @_bandPasses.get()
 
   getVibrato: ->
     @_vibrato.get()
@@ -123,10 +123,25 @@ class @FormantKeyboard
   getAvailableVoices: ->
     VOWELS
 
+  _setVoice: (voice) ->
+    for noteName, synth of @_noteMap
+      synth.setVoice(voice)
+    for bandpass in @_bandPasses.get()
+      bandpass.stop()
+    bandPasses = for bandpassValues, index in voice.values
+      console.log bandpassValues
+      new BandPassProxy(
+        index,
+        @_noteMap,
+        bandpassValues[0],
+        bandpassValues[1],
+        bandpassValues[2]
+      )
+    @_bandPasses.set(bandPasses)
+
   setVoice: (name) ->
     for vowel, index in VOWELS
       continue unless vowel.name == name
       @_vibrato.set(vowel.vibrato)
-      for noteName, synth of @_noteMap
-        synth.setVoice(vowel)
+      @_setVoice(vowel)
 

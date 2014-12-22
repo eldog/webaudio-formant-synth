@@ -1,5 +1,5 @@
 class @FormantSynth
-  constructor: (@_ctx, defaultVoice, @midi) ->
+  constructor: (@_ctx, @midi) ->
     @_bandPassesDep = new Tracker.Dependency
     @_bandPasses = []
     @_frequencyDep = new Tracker.Dependency
@@ -16,7 +16,6 @@ class @FormantSynth
     @_dynamicCompressor.connect(@_masterGain)
     @_masterGain.gain.value = 1
     @_vibosc.start()
-    @setVoice(defaultVoice)
     return unless @midi?
     Tracker.autorun =>
       @midinote = @midi.getNote()

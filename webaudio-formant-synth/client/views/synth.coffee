@@ -36,10 +36,10 @@ Template.synth.helpers
 
   vibratoDepth: ->
     Template.instance()._formantKeyboard.getVibratoDepth()
-#
-#  bandpasses: ->
-#    Template.instance().formantSynth.getBandPasses()
-#
+
+  bandpasses: ->
+    Template.instance()._formantKeyboard.getBandPasses()
+
 #  synthState: ->
 #    state = Template.instance().formantSynth.getState()
 #    if state then 'Stop' else 'Start'

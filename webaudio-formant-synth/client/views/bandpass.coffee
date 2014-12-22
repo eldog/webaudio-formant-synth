@@ -1,10 +1,11 @@
 Template.bandpass.helpers
   Q: ->
+    console.log this
     this.getQ().toFixed(2)
   freq: ->
-    this.getFreq().toFixed(2)
+    this.getFrequency().toFixed(2)
   gain: ->
-    this.getGain().toFixed(2)
+    this.getDb().toFixed(2)
 
 Template.bandpass.events
   'input [name="Q"]': (event) ->
@@ -13,8 +14,8 @@ Template.bandpass.events
 
   'input [name="freq"]': (event) ->
     event.stopImmediatePropagation()
-    this.setFreq(parseFloat($(event.target).val()))
+    this.setFrequency(parseFloat($(event.target).val()))
 
   'input [name="gain"]': (event) ->
     event.stopImmediatePropagation()
-    this.setGain(parseFloat($(event.target).val()))
+    this.setDb(parseFloat($(event.target).val()))
