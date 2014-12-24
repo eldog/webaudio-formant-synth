@@ -1,6 +1,5 @@
 Template.bandpass.helpers
   Q: ->
-    console.log this
     this.getQ().toFixed(2)
   freq: ->
     this.getFrequency().toFixed(2)

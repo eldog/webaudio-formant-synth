@@ -13,8 +13,13 @@ class @MIDI
 
   _midiStarted: (@_midiHandle) ->
     @_inputs = []
-    console.log @_midiHandle.inputs, @_midiHandle.inputs.size
-    getMidiInputs(@_midiHandle)
+    entries = @_midiHandle.inputs.entries()
+    while true
+      entry = entries.next()
+      unless entry.value?
+        break
+      @_inputs.push entry.value[1]
+    @_inputsDep.changed()
 
   getInputs: ->
     @_inputsDep.depend()

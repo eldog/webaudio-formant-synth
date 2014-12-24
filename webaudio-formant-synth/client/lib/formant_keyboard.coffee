@@ -129,7 +129,6 @@ class @FormantKeyboard
     for bandpass in @_bandPasses.get()
       bandpass.stop()
     bandPasses = for bandpassValues, index in voice.values
-      console.log bandpassValues
       new BandPassProxy(
         index,
         @_noteMap,
