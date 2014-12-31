@@ -10,6 +10,17 @@
     Vibrato Rate ({{vibrato}}Hz)
   </label>
   <label>
+    <input type="range" min="0" max="2" step="0.1" value="{{attack}}" id="attack"/>
+    Attack {{attack}}s
+  </label>
+  <label>
+    <input type="range" min="0" max="2" step="0.1" value="{{release}}" id="release"/>
+    Release {{release}}s
+  </label>
+  {{> Reverb reverbFx}}
+  {{> Gain gain}}
+  {{> DynamicsCompressor dynamicsCompressor}}
+  <label>
     Vowel
     <select name="vowel">
       {{#each vowels}}

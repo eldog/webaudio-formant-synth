@@ -12,8 +12,6 @@ class @FormantSynth
     @_vibratoGain = @_ctx.createGain()
     @_vibratoGain.gain.value = 1
     @_masterGain = @_ctx.createGain()
-    @_dynamicCompressor = @_ctx.createDynamicsCompressor()
-    @_dynamicCompressor.connect(@_masterGain)
     @_masterGain.gain.value = 1
     @_vibosc.start()
     return unless @midi?
@@ -27,7 +25,7 @@ class @FormantSynth
     @_connectVowelBandPasses(vowel)
     if @_osc?
       for bandPass in @_bandPasses
-        bandPass.connect(@_osc, @_dynamicCompressor)
+        bandPass.connect(@_osc, @_masterGain)
 
   _connectVowelBandPasses: (vowel) ->
     for bandPass in @_bandPasses
@@ -78,12 +76,19 @@ class @FormantSynth
     @_gainDep.depend()
     Decibels.gainToDb(@_masterGain.gain.value)
 
-  setGain: (value) ->
+  setGain: (value, delay, defaultValue) ->
     gain = Decibels.dbToGain(value)
-    @setGainValue(gain)
+    @setGainValue(gain, delay, defaultValue)
 
-  setGainValue: (gain) ->
-    @_masterGain.gain.value = gain
+  setGainValue: (gain, delay, defaultValue) ->
+    now = @_ctx.currentTime
+    unless defaultValue?
+      defaultValue = @_masterGain.gain.value
+    @_masterGain.gain.cancelScheduledValues(now)
+    # Always have some smooth gradient to prevent popping, as suggested in
+    # http://stackoverflow.com/questions/16095519/removing-pop-hiss-from-webaudio-generated-sound
+    @_masterGain.gain.setTargetAtTime(defaultValue, now, 0.01)
+    @_masterGain.gain.linearRampToValueAtTime(gain, now + 0.001 + delay)
     @_gainDep.changed()
 
   setVelocity: (value) ->
@@ -100,13 +105,14 @@ class @FormantSynth
     if @_started
       throw new Exception 'Already started'
     @_osc = @_ctx.createOscillator()
+
     @_osc.type = 'sawtooth'
     @_osc.frequency.value = 0
     @_osc.start()
     @_vibosc.connect(@_vibratoGain)
     @_vibratoGain.connect(@_osc.detune)
     for bandPass in @_bandPasses
-      bandPass.connect(@_osc, @_dynamicCompressor)
+      bandPass.connect(@_osc, @_masterGain)
     @_started = true
     @_startedDep.changed()
 

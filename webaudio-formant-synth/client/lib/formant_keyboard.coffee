@@ -67,6 +67,8 @@ class @FormantKeyboard
     @_noteMap = {}
     @_vibrato = new ReactiveVar(0)
     @_vibratoDepth = new ReactiveVar(0)
+    @_attack = new ReactiveVar(0)
+    @_release = new ReactiveVar(0)
     @_voiceIndex = 0
     @_voice = VOWELS[@_voiceIndex]
     @_bandPasses = new ReactiveVar([])
@@ -89,12 +91,12 @@ class @FormantKeyboard
     unless synth.getState()
       synth.start()
     synth.setFrequency(frequency)
-    synth.setGain(0)
+    synth.setGain(0, @_attack.get(), 0)
 
   stopNote: (note, frequency) =>
     synth = @_noteMap[note]
     synth.setFrequency(frequency)
-    synth.setGain(-Infinity)
+    synth.setGain(-Infinity, @_release.get())
 
   getBandPasses: ->
     @_bandPasses.get()
@@ -114,6 +116,18 @@ class @FormantKeyboard
     for note, synth of @_noteMap
       synth.setVibratoDepth(value)
     @_vibratoDepth.set(value)
+
+  getAttack: ->
+    @_attack.get()
+
+  setAttack: (attack) ->
+    @_attack.set(attack)
+
+  getRelease: ->
+    @_release.get()
+
+  setRelease: (release) ->
+    @_release.set(release)
 
   isStarted: ->
 
