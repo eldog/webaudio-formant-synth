@@ -6,7 +6,10 @@ Template.synth.created = ->
   AudioContext ?= window.webkitAudioContext
   @_audioContext = new AudioContext
   @_formantKeyboard = new FormantKeyboard(@_audioContext, @data)
+  @data.setKeyboard(@_formantKeyboard)
   @_masterGain = new Gain(@_audioContext)
+
+  @_liveInput = new LiveInput(@_audioContext)
 
   @_dynamicsCompressor = new DynamicsCompressor(@_audioContext)
 
@@ -24,7 +27,15 @@ Template.synth.created = ->
 Template.synth.rendered = ->
   canvas = @find('#oscilloscope')
   @_oscilloscope = new Oscilloscope(@_audioContext, canvas)
+  @_spectrogram = new Spectrogram(@_audioContext, @find('#spectrogram'))
   @_dynamicsCompressor.connect(@_oscilloscope.processor)
+  @_dynamicsCompressor.connect(@_spectrogram.getNode())
+
+  @autorun =>
+    mediaStream = @_liveInput.getNode()
+    if mediaStream?
+      mediaStream.connect(@_spectrogram.getNode())
+      mediaStream.connect(@_oscilloscope.processor)
 
   @_keyboard = new QwertyHancock(
      id: 'keyboard'

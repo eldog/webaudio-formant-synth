@@ -13,3 +13,5 @@ fds:oscilloscope
 
 reactive-var
 fds:sequencer
+fds:spectrogram
+less

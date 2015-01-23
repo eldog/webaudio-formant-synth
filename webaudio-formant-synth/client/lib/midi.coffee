@@ -8,6 +8,8 @@ class @MIDI
     if navigator.requestMIDIAccess
       navigator.requestMIDIAccess().then(_.bind(@_midiStarted, this), @_midiError)
 
+  setKeyboard: (@_keyboard) ->
+
   _midiError: (error) ->
     console.log("MIDI not initialized: " + err.code)
 
@@ -19,6 +21,7 @@ class @MIDI
       unless entry.value?
         break
       @_inputs.push entry.value[1]
+      entry.value[1].onmidimessage = _.bind(@_handleMidiMessage, this)
     @_inputsDep.changed()
 
   getInputs: ->
@@ -35,12 +38,16 @@ class @MIDI
     channel = msg.data[0] & 0xf
     cmd = msg.data[0] >> 4
 
-    return if channel == 9 and cmd != 9
+    #return if channel == 9 and cmd != 9
 
     @_velocity = msg.data[2]
     @_note = msg.data[1]
-    @_velocityDep.changed()
-    @_noteDep.changed()
+    if @_keyboard?
+      switch cmd
+        when 9
+          @_keyboard.playNoteByMidiNumber(@_note)
+        when 8
+          @_keyboard.stopNoteByMidiNumber(@_note)
 
   getVelocity: ->
     @_velocityDep.depend()

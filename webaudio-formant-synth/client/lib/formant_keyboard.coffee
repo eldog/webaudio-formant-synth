@@ -2,9 +2,6 @@ START_OCTAVE = 0
 END_OCTAVE = 8
 
 NOTES = [
-  'A'
-  'A#'
-  'B'
   'C'
   'C#'
   'D'
@@ -14,6 +11,9 @@ NOTES = [
   'F#'
   'G'
   'G#'
+  'A'
+  'A#'
+  'B'
 ]
 
 VOWELS = [
@@ -65,6 +65,7 @@ VOWELS = [
 class @FormantKeyboard
   constructor: (ctx, midi) ->
     @_noteMap = {}
+    @_noteArray = []
     @_vibrato = new ReactiveVar(0)
     @_vibratoDepth = new ReactiveVar(0)
     @_attack = new ReactiveVar(0)
@@ -78,6 +79,7 @@ class @FormantKeyboard
           ctx,
           midi
         )
+        @_noteArray.push "#{note}#{octave}"
     @_setVoice(@_voice)
 
   connect: (destination) ->
@@ -97,6 +99,24 @@ class @FormantKeyboard
     synth = @_noteMap[note]
     synth.setFrequency(frequency)
     synth.setGain(-Infinity, @_release.get())
+
+  _midiNumberToFrequency: (midiNumber) =>
+    440 * Math.pow(2, (midiNumber - 69.0) / 12.0);
+
+  _midiNumberToNote: (midiNumber) =>
+    @_noteArray[midiNumber]
+
+  playNoteByMidiNumber: (midiNumber) =>
+    @playNote(
+      @_midiNumberToNote(midiNumber)
+      @_midiNumberToFrequency(midiNumber),
+    )
+
+  stopNoteByMidiNumber: (midiNumber) =>
+    @stopNote(
+      @_midiNumberToNote(midiNumber)
+      @_midiNumberToFrequency(midiNumber),
+    )
 
   getBandPasses: ->
     @_bandPasses.get()

@@ -1,6 +1,9 @@
 <template name="synth">
   <h2>Synth</h2>
-  <canvas id="oscilloscope"></canvas>
+  <div>
+    <canvas id="oscilloscope"></canvas>
+    <div id="spectrogram"></div>
+  </div>
   <label>
     <input type="range" min="0" max="200" value="{{vibratoDepth}}" id="vibrato-depth"/>
     Vibrato Depth ({{vibratoDepth}})

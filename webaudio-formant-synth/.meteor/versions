@@ -15,6 +15,7 @@ ejson@1.0.5
 fastclick@1.0.2
 fds:oscilloscope@0.0.0
 fds:sequencer@0.0.1
+fds:spectrogram@0.0.0
 follower-livedata@1.0.3
 geojson-utils@1.0.2
 html-tools@1.0.3
@@ -25,6 +26,7 @@ insecure@1.0.2
 jquery@1.0.2
 json@1.0.2
 launch-screen@1.0.1
+less@1.0.12
 livedata@1.0.12
 logging@1.0.6
 meteor@1.1.4
