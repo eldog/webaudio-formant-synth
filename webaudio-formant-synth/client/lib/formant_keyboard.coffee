@@ -66,11 +66,11 @@ class @FormantKeyboard
   constructor: (ctx, midi) ->
     @_noteMap = {}
     @_noteArray = []
-    @_vibrato = new ReactiveVar(0)
-    @_vibratoDepth = new ReactiveVar(0)
-    @_attack = new ReactiveVar(0)
-    @_release = new ReactiveVar(0)
-    @_voiceIndex = 0
+    @_vibrato = new ReactiveVar(6)
+    @_vibratoDepth = new ReactiveVar(20)
+    @_attack = new ReactiveVar(0.3)
+    @_release = new ReactiveVar(0.3)
+    @_voiceIndex = 2
     @_voice = VOWELS[@_voiceIndex]
     @_bandPasses = new ReactiveVar([])
     for octave in [0..END_OCTAVE - START_OCTAVE]
