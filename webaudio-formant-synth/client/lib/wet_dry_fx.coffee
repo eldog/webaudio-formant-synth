@@ -7,6 +7,7 @@ class @WetDryFx
     @_splitter.connect(@_dryGain)
     @_fxNode.connect(@_wetGain)
     max = 1
+    @_wetGain.gain.value = 0.2
     @wetness = new RangeValue(@_wetGain.gain, 'wetness',
       min: 0
       max: max

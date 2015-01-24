@@ -67,7 +67,7 @@ class @FormantKeyboard
     @_noteMap = {}
     @_noteArray = []
     @_vibrato = new ReactiveVar(6)
-    @_vibratoDepth = new ReactiveVar(20)
+    @_vibratoDepth = new ReactiveVar(50)
     @_attack = new ReactiveVar(0.3)
     @_release = new ReactiveVar(0.3)
     @_voiceIndex = 2
@@ -85,6 +85,8 @@ class @FormantKeyboard
   connect: (destination) ->
     for noteName, synth of @_noteMap
       synth.connect(destination)
+    @_setVibrato()
+    @_setVibratoDepth()
 
   start: ->
 
@@ -125,17 +127,23 @@ class @FormantKeyboard
     @_vibrato.get()
 
   setVibrato: (value) ->
-    for note, synth of @_noteMap
-      synth.setVibrato(value)
     @_vibrato.set(value)
+    @_setVibrator()
+
+  _setVibrato: ->
+    for note, synth of @_noteMap
+      synth.setVibrato(@_vibrato.get())
 
   getVibratoDepth: ->
     @_vibratoDepth.get()
 
   setVibratoDepth: (value) ->
-    for note, synth of @_noteMap
-      synth.setVibratoDepth(value)
     @_vibratoDepth.set(value)
+    @_setVibratoDepth()
+
+  _setVibratoDepth: ->
+    for note, synth of @_noteMap
+      synth.setVibratoDepth(@_vibratoDepth.get())
 
   getAttack: ->
     @_attack.get()
