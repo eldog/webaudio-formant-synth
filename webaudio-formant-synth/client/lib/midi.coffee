@@ -38,10 +38,11 @@ class @MIDI
     channel = msg.data[0] & 0xf
     cmd = msg.data[0] >> 4
 
-    #return if channel == 9 and cmd != 9
-
     @_velocity = msg.data[2]
     @_note = msg.data[1]
+    if @_velocity == 0
+      # Count as note off event
+      cmd = 8
     if @_keyboard?
       switch cmd
         when 9
