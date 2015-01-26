@@ -1,0 +1,8 @@
+{
+  "name": "webaudio-formant-synth",
+  "version": "0.0.0",
+  "dependencies": {
+    "qwerty-hancock": "https://github.com/eldog/qwerty-hancock.git#~0.4.4"
+  },
+  "private": true
+}
