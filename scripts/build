@@ -1,0 +1,20 @@
+#!/usr/bin/env zsh
+
+setopt ERR_EXIT NO_UNSET PIPE_FAIL
+
+if (( $# != 0 )); then
+    print -- 'Usage: build'
+    exit 1
+fi
+
+root=$0:A:h:h
+build=$root/local/build
+
+rm --force --recursive $build
+
+cd $root/webaudio-formant-synth
+meteor build $build --directory
+
+cd $build/bundle/programs/server
+npm install
+
