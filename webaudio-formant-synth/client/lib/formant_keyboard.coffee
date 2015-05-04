@@ -90,12 +90,12 @@ class @FormantKeyboard
 
   start: ->
 
-  playNote: (note, frequency) =>
+  playNote: (note, frequency, velocity = 127) =>
     synth = @_noteMap[note]
     unless synth.getState()
       synth.start()
     synth.setFrequency(frequency)
-    synth.setGain(0, @_attack.get(), 0)
+    synth.setGainValue(velocity / 127, @_attack.get(), 0)
 
   stopNote: (note, frequency) =>
     synth = @_noteMap[note]
@@ -108,10 +108,11 @@ class @FormantKeyboard
   _midiNumberToNote: (midiNumber) =>
     @_noteArray[midiNumber]
 
-  playNoteByMidiNumber: (midiNumber) =>
+  playNoteByMidiNumber: (midiNumber, velocity) =>
     @playNote(
       @_midiNumberToNote(midiNumber)
       @_midiNumberToFrequency(midiNumber),
+      velocity
     )
 
   stopNoteByMidiNumber: (midiNumber) =>

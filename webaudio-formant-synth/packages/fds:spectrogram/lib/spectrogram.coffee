@@ -39,18 +39,14 @@ class @Spectrogram
 
   _plot: =>
     requestAnimationFrame(@_plot)
-    @_width = window.innerWidth
-    @_height = window.innerHeight
-    didResize = false
-    if @_canvas.width != @_width
+    @_width = 300
+    @_height = 150
+    unless @_firstRun
       @_canvas.width = @_width
-      didResize = true
-    if @_canvas.height != @_height
       @_canvas.height = @_height
-      didResize = true
-    @_renderFrequencyDomain()
-    if didResize
+      @_firstRun = true
       @_renderAxesLabels()
+    @_renderFrequencyDomain()
 
   _renderFrequencyDomain: ->
     @_analyser.getByteFrequencyData(@_frequencies)

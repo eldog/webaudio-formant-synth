@@ -46,9 +46,9 @@ class @MIDI
     if @_keyboard?
       switch cmd
         when 9
-          @_keyboard.playNoteByMidiNumber(@_note)
+          @_keyboard.playNoteByMidiNumber(@_note, @_velocity)
         when 8
-          @_keyboard.stopNoteByMidiNumber(@_note)
+          @_keyboard.stopNoteByMidiNumber(@_note, @_velocity)
 
   getVelocity: ->
     @_velocityDep.depend()
