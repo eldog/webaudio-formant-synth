@@ -60,6 +60,28 @@ VOWELS = [
     [2600, 120, -20]
     [2900, 120, -40]
   ]
+,
+  name: 'Soprano A'
+  frequency: 100
+  vibrato: 4
+  values: [
+    [800,  80,    0]
+    [1150, 90,   -6]
+    [2900, 120, -32]
+    [3900, 130, -20]
+    [4950, 140, -50]
+  ]
+,
+  name: 'Alto A'
+  frequency: 100
+  vibrato: 4
+  values: [
+    [800, 80, 0]
+    [1150, 90, -4]
+    [2800, 120, -20]
+    [3500, 130, -36]
+    [4950, 140, -60]
+  ]
 ]
 
 class @FormantKeyboard
@@ -133,7 +155,7 @@ class @FormantKeyboard
 
   setVibrato: (value) ->
     @_vibrato.set(value)
-    @_setVibrator()
+    @_setVibrato()
 
   _setVibrato: ->
     for note, synth of @_noteMap
