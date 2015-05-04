@@ -121,6 +121,10 @@ class @FormantKeyboard
       @_midiNumberToFrequency(midiNumber),
     )
 
+  applyPitchBend: (pitchBend) =>
+    for synthName, synth of @_noteMap
+      synth.setDetune(pitchBend)
+
   getBandPasses: ->
     @_bandPasses.get()
 

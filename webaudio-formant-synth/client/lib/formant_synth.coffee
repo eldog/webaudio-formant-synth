@@ -72,6 +72,9 @@ class @FormantSynth
   setVibratoDepth: (value) ->
     @_vibratoGain.gain.value = value
 
+  setDetune: (value) ->
+    @_osc?.detune.value = value
+
   getGain: ->
     @_gainDep.depend()
     Decibels.gainToDb(@_masterGain.gain.value)

@@ -11,7 +11,6 @@ class @MIDI
   setKeyboard: (@_keyboard) ->
 
   _midiError: (error) ->
-    console.log("MIDI not initialized: " + err.code)
 
   _midiStarted: (@_midiHandle) ->
     @_inputs = []
@@ -35,20 +34,25 @@ class @MIDI
       break
 
   _handleMidiMessage: (msg) ->
+
     channel = msg.data[0] & 0xf
     cmd = msg.data[0] >> 4
 
     @_velocity = msg.data[2]
     @_note = msg.data[1]
-    if @_velocity == 0
+    if @_velocity == 0 and cmd == 9
       # Count as note off event
       cmd = 8
+
     if @_keyboard?
       switch cmd
-        when 9
-          @_keyboard.playNoteByMidiNumber(@_note, @_velocity)
         when 8
           @_keyboard.stopNoteByMidiNumber(@_note, @_velocity)
+        when 9
+          @_keyboard.playNoteByMidiNumber(@_note, @_velocity)
+        when 14
+          bend = ((msg.data[2] / 127)  - 0.5) * 100 * 12 * 2
+          @_keyboard.applyPitchBend(bend)
 
   getVelocity: ->
     @_velocityDep.depend()
